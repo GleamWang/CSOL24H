@@ -1,0 +1,72 @@
+--开始游戏坐标，需要改成自己的
+start_x_position = 43326
+start_y_position = 39855
+
+--完成游戏坐标，需要改成自己的
+end_x_position = 42392
+end_y_position = 47505
+ 
+--主函数
+function OnEvent(event, arg) 
+	--3代表鼠标中键，如果按下了CapsLock键后按下了鼠标中键，将启动脚本，脚本运行期间，需保持大写输入状态
+	if (event == "MOUSE_BUTTON_PRESSED" and arg == 3 and IsKeyLockOn("capslock") ) then  
+		OutputLogMessage("event = %s, arg = %s\n", event, arg)  
+		x, y = GetMousePosition();
+		OutputLogMessage("Mouse is at %d, %d\n", x, y);  --输出鼠标所在位置的坐标，用于找到上方四个变量的值
+		fun()  --循环函数
+	end
+end
+
+ 
+function fun()
+	--如果要停止脚本，直接取消capslock键即可，即切换成小写
+	while IsKeyLockOn("capslock")  
+	do
+		--将鼠标移动到开始游戏位置
+		MoveMouseTo(start_x_position,start_y_position) 
+		Sleep(50)
+		--按下鼠标
+		PressAndReleaseMouseButton(1) 
+		Sleep(50)
+		--修正视角，使视角朝前，3000可根据自己游戏角度进行调节
+		MoveMouseRelative(0,3000)
+		Sleep(50)
+		--释放鼠标
+		ReleaseMouseButton(1)
+		--按下键盘3键切换进展武器，如果需要用副武器可以把4改成3，同理主武器为2
+		PressKey(4)
+		--按下鼠标
+		PressMouseButton(1)
+		--松开3键
+		ReleaseKey(4)
+		--按下W键，前进
+		PressKey(17)
+		Sleep(50)
+		--利用for循环实现转向，可以自定义方向和转向大小
+		for i = 0, 3000, 5 do
+			--第一个参数对应水平位移，第二个对应垂直位移
+			MoveMouseRelative(2,0)
+			Sleep(1)
+		end
+		Sleep(100)
+		--修正鼠标
+		MoveMouseRelative(-1200,600)
+		Sleep(50)
+		--松开鼠标
+		ReleaseMouseButton(1)
+		--松开W键
+		ReleaseKey(17)
+		--按下并松开ESC键
+		PressAndReleaseKey(1)
+		Sleep(10)
+		--按下并松开ESC键
+		PressAndReleaseKey(1)
+		Sleep(10)
+		--将鼠标移动到完成对局位置
+		MoveMouseTo(end_x_position,end_y_position)
+		Sleep(50)
+		--按下鼠标
+		PressAndReleaseMouseButton(1)
+		Sleep(50) 
+	end
+end
